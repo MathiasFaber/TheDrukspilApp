@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import PubNub from 'pubnub';
 import { PubNubProvider, usePubNub } from 'pubnub-react';
-import uuid from 'react-uuid';
 
 const Lobby = ({ route }) => {
 
