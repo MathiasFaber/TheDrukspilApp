@@ -8,11 +8,12 @@ import styles from '../style';
 import uuid from 'react-uuid';
 
 
-const CreateProfile = ({route, navigation}) => {
+const CreateProfile = ({ route, navigation }) => {
     const [loading1, setLoading1] = useState(false)
     const [loading2, setLoading2] = useState(false)
     const [image, setImage] = useState([])
     const [name, setName] = useState('')
+    const [currentUser, setCurrentUser] = useState({})
 
     const { pin, host } = route.params
 
@@ -39,15 +40,15 @@ const CreateProfile = ({route, navigation}) => {
     };
 
     const saveUser = async () => {
-        setLoading2(true)
 
+        setLoading2(true)
+        let user;
         /*
         if (image.length === 0) {
             Alert.alert('Noget gik galt :O', 'Tag et billede :D', [{ text: 'Oki!', onPress: () => setLoading2(false) }])
             return
         }
         */
-
         if (name.length < 1) {
             Alert.alert('Noget gik galt :O', 'Vælg et navn :D', [{ text: 'Oki!', onPress: () => setLoading2(false) }])
             return
@@ -59,7 +60,7 @@ const CreateProfile = ({route, navigation}) => {
             'currentUser',
             userId,
         )
-/* 
+/*
         const response = await fetch(image[0]);
         const blob = await response.blob();
 
@@ -67,25 +68,26 @@ const CreateProfile = ({route, navigation}) => {
         const snapshot = await ref.put(blob);
 
         snapshot.ref.getDownloadURL().then((imgurl) => {
-            console.log(userId, imgurl, 'wedidit')
+            user = {
+                'id': userId,
+                'name': name,
+                'img': imgurl
+            }
             firebase
                 .database()
                 .ref(`/users/${userId}`)
-                .set({
-                    'id': userId,
-                    'name': name,
-                    'img': imgurl
-                })
+                .set(user)
+
+                navigation.navigate('Lobby', { pin, currentUser: user, host: host })
+
         }).then(() => {
             setLoading2(false)
-        }).catch((err)=> {
+        }).catch((err) => {
             console.log(err)
         })
-*/
+        */
 
-        // redirect to game here
-        navigation.navigate('Lobby', {pin, currentUser: userId, host: host })
-
+        navigation.navigate('Lobby', { pin, currentUser: {id:userId}, host: host }) // this should be deleted and navigation should come from inside firebase call
     }
 
     return (

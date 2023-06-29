@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Game from './src/components/Game';
@@ -13,10 +13,21 @@ const Stack = createNativeStackNavigator();
 
 
 function App() {
+
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'white',
+      background: '#319CAC',
+      card: '#319CAC'
+    },
+  };
+
   
   // when joining or creating a game, a uuid should be generated to be used for this user 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
       <Stack.Navigator initialRouteName='Welcome'>
         <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="CreateProfile" component={CreateProfile} />

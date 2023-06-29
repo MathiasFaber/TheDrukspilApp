@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Text, ActivityIndicator, Alert } from 'react-native';
+import { View, TextInput, Button, Pressable, Text, ActivityIndicator, Alert, Image } from 'react-native';
 import uuid from 'react-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import Game from './Game';
+import styles from '../style';
 import { firebase } from '../../FirebaseConfig';
 // this works, connecting to devices. Now try, instead of awesome channel, pass in an id from a "login" page, which will be the channel, so that multiple channels can be used at the same time. 
 
@@ -16,14 +16,13 @@ function Welcome({ navigation }) {
     const [loading, setLoading] = useState(false)
     const [idUser, setIdUser] = useState(false)
 
-    /*
-    useEffect(()=> {
-        const checkForUser = async() => {
+
+    useEffect(() => {
+        const checkForUser = async () => {
             setCurrentUser(await AsyncStorage.getItem('currentUser'))
         }
         checkForUser()
     })
-    */
 
 
     useEffect(() => {
@@ -94,17 +93,48 @@ function Welcome({ navigation }) {
         await AsyncStorage.removeItem('currentUser')
     }
 
+    const useTestUser = async (user) => {
+        if (user === 1) {
+            await AsyncStorage.setItem('currentUser', '48d8991d-a45c-e296-b335-0d099e26f466')
+            setCurrentUser('48d8991d-a45c-e296-b335-0d099e26f466')
+        } else {
+            await AsyncStorage.setItem('currentUser', '55a129be-b4ee-dfcd-6bd1-e2c8bde1f1e1')
+            setCurrentUser('55a129be-b4ee-dfcd-6bd1-e2c8bde1f1e1')
+        }
+
+    }
+
     return (
-        <View style={{ paddingTop: 70 }}>
-            {loading ? <View><Text style={{ alignSelf: 'center', paddingBottom: 10 }}>Loading</Text><ActivityIndicator size={'large'}></ActivityIndicator></View> :
+        <View style={{ paddingTop: 20 }}>
+            <Image
+                source={require('../../assets/logo.png')}
+                style={styles.welcome.img}
+                key={userProfile.id}
+            />
+            <Text style={styles.welcome.headline}>Dit yndlings drukspil</Text>
+            {currentUser & !loading ? <Text style={{ alignSelf: 'center' }}>{currentUser}</Text> : null}
+            {loading ? <View><Text style={styles.welcome.gamePin}>Gør spillet klar...</Text><ActivityIndicator size={'large'}></ActivityIndicator></View> :
                 <View>
-                    <Button title='Create Game' onPress={() => identifyUser()} />
-                    <Text style={{ paddingTop: 20, alignSelf: 'center' }}>Game Pin:</Text>
-                    <TextInput placeholder='Pin' style={{ alignSelf: 'center', borderWidth: 1, width: '50%' }} onChangeText={(e) => setPin(e)}></TextInput>
-                    <Button title='Join Game' onPress={() => (pin?.length === 6) ? identifyUser() : Alert.alert("Koden er ikke gyldig")} />
-                    {currentUser ? <Text style={{ alignSelf: 'center' }}>{currentUser}</Text> : null}
+                    <Pressable
+                        onPress={() => identifyUser()}
+                        style={{ ...styles.btn, marginTop: 10 }}
+                    >
+                        <Text style={styles.btn.txt}>Opret spil</Text>
+                    </Pressable>
+                    <Text style={styles.welcome.gamePin}>Pinkode:</Text>
+                    <TextInput placeholder='123456' style={styles.welcome.input} onChangeText={(e) => setPin(e)}></TextInput>
+
+                    <Pressable
+                        onPress={() => (pin?.length === 6) ? identifyUser() : Alert.alert("Koden er ikke gyldig")}
+                        style={{ ...styles.btn, marginTop: 10 }}
+                    >
+                        <Text style={styles.btn.txt}>Join spil</Text>
+                    </Pressable>
                     <Button title='Opret testbruger' onPress={() => hackTesting()} />
                     <Button title='Slet testbruger' onPress={() => deleteUserAsync()} />
+                    <Button title='Skip login, use test user 1' onPress={() => useTestUser(1)} />
+                    <Button title='Skip login, use test user 2' onPress={() => useTestUser(2)} />
+
                 </View>
             }
         </View>
