@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
             alignSelf: 'center'
         },
         headline: {
-            alignSelf:'center',
+            alignSelf: 'center',
             color: 'white',
             fontSize: 25,
             fontWeight: 'bold',
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         width: '80%',
         alignSelf: 'center',
         marginBottom: 10,
-        txt:{
+        txt: {
             alignSelf: 'center',
             fontWeight: 'bold',
             fontSize: 15,
@@ -150,6 +150,47 @@ const styles = StyleSheet.create({
             alignItems: 'center',
             justifyContent: 'center',
         },
+    },
+    game: {
+        loadingText: {
+            color: 'white',
+            alignSelf: 'center',
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginTop: '10%'
+        },
+        activityIndicator: {
+            alignSelf: 'center',
+            marginTop: "10%"
+        },
+        countdown: {
+            color: 'white',
+            alignSelf: 'center',
+            fontSize: 200,
+            fontWeight: 'bold',
+            marginTop: '2%'
+        },
+        options: {
+            alignItems: 'center',
+            borderRadius: 20,
+            backgroundColor: '#13B5CD',
+            marginBottom: 10,
+            width: '95%',
+        },
+        img: {
+            width: '85%', // Adjust the size of the images
+            aspectRatio: 1, // Maintain aspect ratio of the images
+            borderRadius: 200,
+            marginTop:10,
+            marginBottom:10,
+        },
+        playerName: {
+            fontSize: 17,
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            color: 'white',
+            marginBottom: '5%'
+        }
     }
 })
 

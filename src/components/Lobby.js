@@ -7,10 +7,11 @@ import PubNub from 'pubnub';
 import { PubNubProvider, usePubNub } from 'pubnub-react';
 import { firebase } from '../../FirebaseConfig';
 import styles from '../style';
+import { NavigationContainer } from '@react-navigation/native';
 
 
 
-const Lobby = ({ route }) => {
+const Lobby = ({ route, navigation }) => {
 
     const { currentUser, host, pin } = route.params
 
@@ -22,12 +23,12 @@ const Lobby = ({ route }) => {
 
     return (
         <PubNubProvider client={pubnub}>
-            <GameLobby pin={pin} currentUser={currentUser} host={host} />
+            <GameLobby pin={pin} currentUser={currentUser} host={host} navigation={navigation} />
         </PubNubProvider>
     );
 }
 
-const GameLobby = ({ pin, currentUser, host }) => {
+const GameLobby = ({ pin, currentUser, host, navigation }) => {
     const pubnub = usePubNub();
     const [channels] = useState([pin]);
     const [messages, addMessage] = useState([]);
@@ -144,6 +145,7 @@ const GameLobby = ({ pin, currentUser, host }) => {
 
     const startGame = () => {
         console.log("start spillet manner")
+        navigation.navigate('Game', { currentUser, host, pin })
     }
 
 
@@ -153,7 +155,7 @@ const GameLobby = ({ pin, currentUser, host }) => {
             style={styles.lobby.view}
         >
             <Text style={styles.lobby.pin}>{pin}</Text>
-            {userProfiles.length === 0 && <ActivityIndicator></ActivityIndicator>}
+            {userProfiles.length === 0 && <ActivityIndicator color={'white'}></ActivityIndicator>}
             <View style={styles.lobby.container}>
                 {userProfiles.map((userProfile, index) => (
                     <View style={styles.lobby.imgContainer} key={index}>

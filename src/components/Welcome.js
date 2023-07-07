@@ -113,7 +113,7 @@ function Welcome({ navigation }) {
             />
             <Text style={styles.welcome.headline}>Dit yndlings drukspil</Text>
             {currentUser & !loading ? <Text style={{ alignSelf: 'center' }}>{currentUser}</Text> : null}
-            {loading ? <View><Text style={styles.welcome.gamePin}>Gør spillet klar...</Text><ActivityIndicator size={'large'}></ActivityIndicator></View> :
+            {loading ? <View><Text style={styles.welcome.gamePin}>Gør spillet klar...</Text><ActivityIndicator color={'white'} size={'large'}></ActivityIndicator></View> :
                 <View>
                     <Pressable
                         onPress={() => identifyUser()}
@@ -130,6 +130,7 @@ function Welcome({ navigation }) {
                     >
                         <Text style={styles.btn.txt}>Join spil</Text>
                     </Pressable>
+                    <Button title='Skip til game' onPress={() => navigation.navigate('Game', {currentUser: { id: '48d8991d-a45c-e296-b335-0d099e26f466'}, host:  true, pin: '123456'})} />
                     <Button title='Opret testbruger' onPress={() => hackTesting()} />
                     <Button title='Slet testbruger' onPress={() => deleteUserAsync()} />
                     <Button title='Skip login, use test user 1' onPress={() => useTestUser(1)} />

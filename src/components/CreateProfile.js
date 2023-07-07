@@ -97,7 +97,7 @@ const CreateProfile = ({ route, navigation }) => {
                 await pickImage()
                 setLoading1(false)
             }}>
-                {loading1 ? <ActivityIndicator style={styles.create.img}></ActivityIndicator> : image[0] ? <Image source={{ uri: image[0] }} style={styles.create.img} /> : <Image source={require('../../assets/userImage.png')} style={styles.create.img} />}
+                {loading1 ? <ActivityIndicator color={'white'} style={styles.create.img}></ActivityIndicator> : image[0] ? <Image source={{ uri: image[0] }} style={styles.create.img} /> : <Image source={require('../../assets/userImage.png')} style={styles.create.img} />}
             </Pressable>
             <Text style={styles.create.txt}>Indtast spillernavn:</Text>
             <TextInput style={styles.create.input} onChangeText={(x) => setName(x)}></TextInput>
