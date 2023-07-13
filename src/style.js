@@ -181,8 +181,8 @@ const styles = StyleSheet.create({
             width: '85%', // Adjust the size of the images
             aspectRatio: 1, // Maintain aspect ratio of the images
             borderRadius: 200,
-            marginTop:10,
-            marginBottom:10,
+            marginTop: 10,
+            marginBottom: 10,
         },
         playerName: {
             fontSize: 17,
@@ -190,6 +190,71 @@ const styles = StyleSheet.create({
             alignSelf: 'center',
             color: 'white',
             marginBottom: '5%'
+        }
+    },
+    sqr: {
+        text1: {
+            alignSelf: 'center',
+            paddingBottom: 5,
+            fontWeight: 'bold',
+            fontSize: 15,
+            paddingTop: 25,
+            paddingBottom: 5,
+            color: 'white',
+        },
+        container: {
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 30,
+            width: '80%',
+            alignSelf: 'center'
+        },
+        text: {
+            alignSelf: 'center',
+            paddingBottom: 5,
+            fontWeight: 'bold',
+            fontSize: 15,
+            paddingTop: 25,
+            paddingBottom: 5,
+            color: 'white',
+            flex: 1,
+        },
+        img: {
+            aspectRatio: 1,
+            borderRadius: 100,
+            flex: 1,
+            width: 1,
+            marginRight: 10
+        },
+        btn: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 12,
+            paddingHorizontal: 32,
+            borderRadius: 20,
+            elevation: 3,
+            backgroundColor: '#13B5CD',
+            width: '80%',
+            alignSelf: 'center',
+            marginBottom: 10,
+            marginTop: 10,
+            txt: {
+                alignSelf: 'center',
+                fontWeight: 'bold',
+                fontSize: 15,
+                color: 'white'
+            }
+        },
+    },
+    gameover: {
+        txt: {
+            alignSelf: 'center',
+            fontSize: 40,
+            color: 'white',
+            fontWeight: 'bold',
+            height: '40%',
+            marginTop: '50%',
+            alignItems: 'center'
         }
     }
 })

@@ -60,8 +60,26 @@ const CreateProfile = ({ route, navigation }) => {
             'currentUser',
             userId,
         )
-/*
-        const response = await fetch(image[0]);
+
+        const dev = true
+        let devUser = {
+            'id': userId,
+            'name': name,
+            'img': 'testUrl'
+        }
+
+        // FOLLOWING NEEDS TO BE UNCOMMENTED TO CREATE A USER IN FIREBASE
+        if (dev){
+            console.log('running dev, no image upload')
+            firebase
+                .database()
+                .ref(`/users/${userId}`)
+                .set(devUser)
+
+        navigation.navigate('Lobby', { pin, currentUser: {id:userId}, host: host }) // this should be deleted and navigation should come from inside firebase call
+
+        } else {
+            const response = await fetch(image[0]);
         const blob = await response.blob();
 
         const ref = firebase.storage().ref().child(`pictures/users/${image[1]}`);
@@ -78,16 +96,18 @@ const CreateProfile = ({ route, navigation }) => {
                 .ref(`/users/${userId}`)
                 .set(user)
 
-                navigation.navigate('Lobby', { pin, currentUser: user, host: host })
+            navigation.navigate('Lobby', { pin, currentUser: user, host: host })
 
         }).then(() => {
             setLoading2(false)
         }).catch((err) => {
             console.log(err)
         })
-        */
+        }
+        
 
-        navigation.navigate('Lobby', { pin, currentUser: {id:userId}, host: host }) // this should be deleted and navigation should come from inside firebase call
+
+        //navigation.navigate('Lobby', { pin, currentUser: {id:userId}, host: host }) // this should be deleted and navigation should come from inside firebase call
     }
 
     return (

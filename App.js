@@ -3,7 +3,7 @@ import { View, TextInput, Button, Text } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Game from './src/components/Game';
+import Game from './src/components/Game/Game';
 import Welcome from './src/components/Welcome';
 import CreateProfile from './src/components/CreateProfile';
 import Lobby from './src/components/Lobby';

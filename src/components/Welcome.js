@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from '../style';
 import { firebase } from '../../FirebaseConfig';
-// this works, connecting to devices. Now try, instead of awesome channel, pass in an id from a "login" page, which will be the channel, so that multiple channels can be used at the same time. 
 
 function Welcome({ navigation }) {
     const [joinGame, setJoinGame] = useState(false)
@@ -22,7 +21,7 @@ function Welcome({ navigation }) {
             setCurrentUser(await AsyncStorage.getItem('currentUser'))
         }
         checkForUser()
-    })
+    }, [])
 
 
     useEffect(() => {
@@ -34,9 +33,7 @@ function Welcome({ navigation }) {
                     .ref(`/users/${userId}`)
                     .on('value', snapshot => {
                         const user = snapshot.val()
-                        console.log(user, "user??")
                         if (user !== null) {
-                            console.log(user, "hejsa")
                             navigation.navigate('Lobby', { pin: pin || randomPin, currentUser: user, host: pin ? false : true })
                             setPin(null)
                             setLoading(false)

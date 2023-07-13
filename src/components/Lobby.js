@@ -18,7 +18,7 @@ const Lobby = ({ route, navigation }) => {
     const pubnub = new PubNub({
         publishKey: 'pub-c-0a4c102e-d8c7-49ba-80fe-d13b3e6ddd5e',
         subscribeKey: 'sub-c-06546e42-6ace-4a92-ab1c-99b4886bf66f',
-        uuid: currentUser.id
+        uuid: currentUser?.id
     });
 
     return (
@@ -29,6 +29,7 @@ const Lobby = ({ route, navigation }) => {
 }
 
 const GameLobby = ({ pin, currentUser, host, navigation }) => {
+
     const pubnub = usePubNub();
     const [channels] = useState([pin]);
     const [messages, addMessage] = useState([]);
@@ -37,8 +38,9 @@ const GameLobby = ({ pin, currentUser, host, navigation }) => {
     const [ready, setReady] = useState(false)
     const [occupants, setOccupants] = useState([])
     const [userProfiles, setUserProfiles] = useState([])
+    const [questionsArr, setQuestionsArr] = useState([])
 
-    const getUserProfiles = useCallback(async () => {
+    const getUserProfiles = async () => {
         try {
             const promises = occupants.map((x) => {
                 return new Promise((resolve, reject) => {
@@ -50,76 +52,113 @@ const GameLobby = ({ pin, currentUser, host, navigation }) => {
             });
 
             const profiles = await Promise.all(promises);
-            setUserProfiles(profiles);
+            if (profiles.length > 0) {
+                console.log(profiles, "profiles")
+                setUserProfiles(profiles);
+            }
         } catch (error) {
             console.log(error, "error");
         }
-    }, [occupants]);
+    };
 
     const handleMessage = event => {
         const message = event.message;
-        if (typeof message === 'string' || message.hasOwnProperty('text')) {
-            const text = message.text || message;
+        if (message.type === 'start') {
+            console.log('Start detected. Starting game')
+            console.log(userProfiles, currentUser.id)
+
+            const navigateToGame = async () => {
+                await getQuestions(); // Fetch the questions before navigating
+                await getUserProfiles(); // Fetch the user profiles before navigating
+                setReady(true)
+            };
+
+            navigateToGame();
+        }
+        if (message.type === 'text') {
+            const text = message.text;
             addMessage(messages => [...messages, text]);
         }
     };
 
     const updateLobby = async () => {
-        let arrOfOccupants = []
-        const hereNow = await pubnub.hereNow({
-            channels: channels,
-            includeUUIDs: true,
-            includeState: true
-        }).catch((error) => {
-            console.log(error)
-        })
-        const test = Object.values(hereNow.channels)
-        await test[0].occupants.map((x) => {
-            arrOfOccupants.push(x.uuid)
-            // not done, should add new uuid's on join. Right now it adds mulitple times the same and doesnt update on all devices. 
-        })
-        return arrOfOccupants
-    }
+        try {
+            const hereNow = await pubnub.hereNow({
+                channels: channels,
+                includeUUIDs: true,
+                includeState: true
+            });
+
+            const test = Object.values(hereNow.channels);
+            console.log(JSON.stringify(test[0].occupants, null, 2))
+            const currentOccupants = test[0].occupants.map(x => x.uuid);
+            return currentOccupants;
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    };
+
+    useEffect(() => {
+        console.log(userProfiles, "wtf dude");
+        if (userProfiles.length > 0 && ready && questionsArr.length > 0) {
+            console.log('ready and: ', userProfiles)
+            navigation.navigate('Game', {
+                currentUser,
+                host,
+                pin,
+                questionsArr,
+                userProfiles
+            });
+        }
+    }, [userProfiles, ready, questionsArr]);
 
     const handlePresence = async event => {
         console.log(event.action, currentUser.id)
         if (event.action === 'join' || event.action === 'leave') {
-            const lobbyists = await updateLobby()
             setCount(event.occupancy)
             const update = async () => {
                 const lobs = await updateLobby()
+                console.log(lobs, "test")
                 setOccupants(lobs)
             }
             update()
-            /*
-            const interval = setInterval(() => {
-                update()
-            }, 2000);
-            */
-
-            return () => clearInterval(interval);
         }
     };
 
-    const sendMessage = (message) => {
-        if (message) {
+    const sendMessage = (type, msg) => {
+        if (msg) {
+            const message = {
+                type: type,
+                text: msg
+            }
+            console.log(userProfiles, "lol")
             pubnub
                 .publish({ channel: channels[0], message })
                 .then(() => setMessage(''));
         }
     };
 
-    useEffect(() => {
-        console.log(JSON.stringify(userProfiles, null, 2))
-    }, [userProfiles])
+    const getQuestions = useCallback(async () => {
+        try {
+            const snapshot = await firebase.database().ref('/questions').once('value');
+            const questionsObject = snapshot.val();
+            const questionsArray = Object.values(questionsObject);
+            console.log(questionsArray)
+            setQuestionsArr(questionsArray);
+        } catch (err) {
+            console.log(err, 1232323)
+        }
+    })
 
     useEffect(() => {
-        console.log(occupants, "occupants on change occupants")
+        getQuestions()
+    }, [])
+
+    useEffect(() => {
         const gup = async () => {
             await getUserProfiles()
-            setReady(true)
         }
-        console.log(userProfiles, "userprofile")
         gup()
     }, [occupants])
 
@@ -144,8 +183,8 @@ const GameLobby = ({ pin, currentUser, host, navigation }) => {
     }, [pubnub, channels]);
 
     const startGame = () => {
-        console.log("start spillet manner")
-        navigation.navigate('Game', { currentUser, host, pin })
+        sendMessage('start', 'start')
+        //navigation.navigate('Game', { currentUser, host, pin, questionsArr, userProfiles })
     }
 
 
@@ -180,12 +219,17 @@ const GameLobby = ({ pin, currentUser, host, navigation }) => {
             >
                 <Text style={styles.btn.txt}>Venter på deltagere..</Text>
             </Pressable> :
-                <Pressable
-                    onPress={() => startGame()}
-                    style={{ ...styles.btn, marginTop: 10 }}
-                >
-                    <Text style={styles.btn.txt}>Start spil!</Text>
-                </Pressable>}
+                host ?
+                    <Pressable
+                        onPress={() => startGame()}
+                        style={{ ...styles.btn, marginTop: 10 }}
+                    >
+                        <Text style={styles.btn.txt}>Start spil!</Text>
+                    </Pressable> : <Pressable
+                        style={{ ...styles.btn, marginTop: 10, backgroundColor: '#649299' }}
+                    >
+                        <Text style={styles.btn.txt}>Venter på start...</Text>
+                    </Pressable>}
             {messages.map((message, index) => {
                 return (
                     <Text key={`message-${index}`} style={{ alignSelf: 'center' }}>{message}</Text>
@@ -198,7 +242,7 @@ const GameLobby = ({ pin, currentUser, host, navigation }) => {
                     onChangeText={setMessage}
                 />
                 <Pressable
-                    onPress={() => sendMessage(message)}
+                    onPress={() => sendMessage('text', message)}
                     style={styles.lobby.sendButton}
                 >
                     <Ionicons name="paper-plane-outline" size={24} color="white" />
