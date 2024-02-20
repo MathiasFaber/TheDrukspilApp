@@ -59,11 +59,11 @@ const FunAndGames = ({ pin, currentUser, host, navigation, questionsArr, userPro
 
     const testLobby = [
         {
-            name: "Stor pik",
+            name: "Test1",
             img: "/Users/mathiasfaberkristiansen/Desktop/TheDrukspilApp.nosync/assets/userImage.png"
         },
         {
-            name: "Yunuz",
+            name: "Test2",
             img: "/Users/mathiasfaberkristiansen/Desktop/TheDrukspilApp.nosync/assets/userImage.png"
         }
     ]
@@ -160,7 +160,7 @@ const FunAndGames = ({ pin, currentUser, host, navigation, questionsArr, userPro
     };
 
     useEffect(() => {
-        // might be a bug here try the console log under:
+        // might be a bug here
         console.log(answers.length, userProfiles.length)
         console.log(answers, "answerss")
         if (answers.length === userProfiles.length) {
