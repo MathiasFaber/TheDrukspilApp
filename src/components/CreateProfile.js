@@ -18,6 +18,7 @@ const CreateProfile = ({ route, navigation }) => {
     const { pin, host } = route.params
 
     // Picks an image from the phone, to add to the advertisement
+    // Mike test
     const pickImage = async () => {
         let source = {}
         await ImagePicker.requestCameraPermissionsAsync()
